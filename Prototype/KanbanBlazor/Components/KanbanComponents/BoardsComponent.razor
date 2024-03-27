@@ -1,0 +1,41 @@
+﻿@inject IDataAccess DataAccess
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+@if (Boards == null || WorkspaceId == null)
+{
+    <p>Loading Boards...</p>
+}
+else
+{
+    <div class="card">
+        <div class="card-header">
+            <h3>Boards</h3>
+        </div>
+        <div class="card-body">
+            <div class="btn-group">
+                <b>Select Board</b>
+                @foreach (var board in Boards)
+                {
+                    <button class="btn btn-primary m-1 " type="button">@board.Name</button>
+                }
+                <button class="btn btn-success m-1"type="button">+ Add Board</button>    
+            </div>
+        </div>
+    </div>
+}
+@code {
+    [Parameter]
+    public required string WorkspaceId { get; set; }
+
+    private List<KBoard>? Boards { get; set; } = new List<KBoard>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Boards = (await DataAccess.GetWorkspaceBoards(WorkspaceId)).ToList();
+    }
+
+
+
+}
+

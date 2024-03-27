@@ -1,0 +1,17 @@
+﻿@page "/kanban"
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+
+<PageTitle>Kanban</PageTitle>
+
+<input @bind="Email" /> 
+
+@if (Email != null) 
+{ 
+    <KanbanFrame Email="@Email" /> 
+}
+  
+@code {
+    public string? Email { get; set; }
+}

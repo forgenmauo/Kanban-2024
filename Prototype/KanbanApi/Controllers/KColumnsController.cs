@@ -21,12 +21,6 @@ namespace KanbanApi.Controllers
             _context = context;
         }
 
-        // GET: api/KColumns
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<KColumn>>> GetAllColumns()
-        {
-            return await _context.KColumns.ToListAsync();
-        }
 
         // GET: api/KColumns/boardId
         [HttpGet("{boardId}")]

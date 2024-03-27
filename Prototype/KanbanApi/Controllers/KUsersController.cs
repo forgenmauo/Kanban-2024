@@ -27,18 +27,19 @@ namespace KanbanApi.Controllers
             return await _context.KUsers.ToListAsync();
         }
       
-        // GET: api/KUsers/userId
-        [HttpGet("{userId}")]
-        public async Task<ActionResult<KUser>> GetKUser(string userId)
+        // GET: api/KUsers/email
+        [HttpGet("{email}")]
+        public async Task<ActionResult<KUser>> GetKUser(string email)
         {
+            
             //get the user from the database
-            var kanbanUser = await _context.KUsers.FindAsync(userId)
+            var kanbanUser = await _context.KUsers.FirstOrDefaultAsync(u => u.Email == email)
                 ?? new KUser();
 
             if (kanbanUser.Id != "Blank Id")
             {
 
-                kanbanUser.Workspaces = _context.KWorkspaces.Where(w => w.KUserId == userId).ToList();
+                kanbanUser.Workspaces = _context.KWorkspaces.Where(w => w.KUserId == kanbanUser.Id).ToList();
                 kanbanUser.Workspaces.ForEach(w =>
                 {
                     w.Boards = _context.KBoards.Where(b => b.KWorkspaceId == w.Id).ToList();

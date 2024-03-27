@@ -7,7 +7,7 @@ namespace DAL.Services
         Task<IEnumerable<KColumn>> GetBoardColumns(string boardId);
         Task<IEnumerable<KTask>> GetColumnTasks(string columnId);
         Task<IEnumerable<KUser>> GetKanbanUsers();
-        Task<KUser> GetKanbanUser(string userId);
+        Task<KUser> GetKanbanUser(string email);
         
         Task<IEnumerable<KWorkspace>> GetUserWorkspaces(string userId);
         Task<IEnumerable<KBoard>> GetWorkspaceBoards(string workspaceId);

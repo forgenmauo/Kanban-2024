@@ -1,10 +1,16 @@
 using KanbanBlazor.Components;
+using DAL.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddHttpClient<IDataAccess, DataAccess>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7032/");
+});
 
 var app = builder.Build();
 

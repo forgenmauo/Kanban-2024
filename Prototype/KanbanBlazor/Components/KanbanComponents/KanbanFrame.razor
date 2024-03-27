@@ -1,0 +1,87 @@
+﻿@inject IDataAccess DataAccess
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<h3>Kanban </h3>
+@Email
+
+@if(ReturnedUser.Id == "Blank Id")
+{
+    <p>Loading...</p>
+}
+else
+{ 
+    <WorkspacesComponent UserId="@ReturnedUser.Id" /> 
+}
+
+@code {
+    [Parameter]
+    public required string Email { get; set; }
+
+    public KUser? ReturnedUser { get; set; } = new KUser();
+    
+    public string? NewUserResult { get; set; } = "Working...";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCurrentUser(Email);
+        if (ReturnedUser.Id == "Blank Id") { await PostNewKanbanUser(); }
+        else { NewUserResult = "User Already Exists"; }
+    }
+
+    public async Task GetCurrentUser(string email)
+    {
+        ReturnedUser = await DataAccess.GetKanbanUser(email);
+    }
+
+    public async Task PostNewKanbanUser()
+    {
+        KUser NewUser = new KUser();
+        NewUser.Id = Guid.NewGuid().ToString();
+        NewUser.UserName = "Blank Username";
+        NewUser.Email = Email;
+        await DataAccess.PostKanbanUser(NewUser);
+        await PostKanbanWorkspace(NewUser);
+    }
+    
+    public async Task PostKanbanWorkspace(KUser user)
+    {
+        KWorkspace workspace = new KWorkspace();
+        workspace.Id = Guid.NewGuid().ToString();
+        workspace.Name = "Workspace 1";
+        workspace.KUserId = user.Id!;
+        await DataAccess.PostKanbanWorkspace(workspace);
+        await PostKanbanBoard(workspace.Id);
+    }
+
+    public async Task PostKanbanBoard(string workspaceId)
+    {
+        KBoard newBoard = new KBoard();
+        newBoard.Id = Guid.NewGuid().ToString();
+        newBoard.Name = "Board 1 - Workspace 1";
+        newBoard.KWorkspaceId = workspaceId;
+        await DataAccess.PostKanbanBoard(newBoard);
+        await PostKanbanColumn(newBoard.Id);
+    }
+
+    public async Task PostKanbanColumn(string boardId)
+    {
+        KColumn newColumn = new KColumn();
+        newColumn.Id = Guid.NewGuid().ToString();
+        newColumn.KBoardId = boardId;
+        await DataAccess.PostKanbanColumn(newColumn);
+        await PostKanbanTask(newColumn.Id);
+    }
+
+    public async Task PostKanbanTask(string columnId)
+    {
+        KTask newTask = new KTask();
+        newTask.Id = Guid.NewGuid().ToString();
+        newTask.KColumnId = columnId;
+        await DataAccess.PostKanbanTask(newTask);
+        NewUserResult = "New User Created";
+    }
+
+}
+
+
