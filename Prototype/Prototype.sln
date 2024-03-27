@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KanbanApi", "KanbanApi\KanbanApi.csproj", "{EBA0AFB8-BA33-4A7A-A7A8-C109FCAF3412}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{FE52C79A-375E-40E1-BBA4-DA833DF69A5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{EBA0AFB8-BA33-4A7A-A7A8-C109FCAF3412}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBA0AFB8-BA33-4A7A-A7A8-C109FCAF3412}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBA0AFB8-BA33-4A7A-A7A8-C109FCAF3412}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE52C79A-375E-40E1-BBA4-DA833DF69A5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE52C79A-375E-40E1-BBA4-DA833DF69A5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE52C79A-375E-40E1-BBA4-DA833DF69A5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE52C79A-375E-40E1-BBA4-DA833DF69A5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
