@@ -2,10 +2,10 @@
 
 # This repository is in development for a class project, subject to change, and not fully functional. 
 ## Development, documentation, and setup instructions will not be completed until 4/30/2024. 
-## These anncouncements will be removed when the project is ready. 
+## These announcements will be removed when the project is ready. 
 ## Thank you for your interest and patience. 
 
- **Table of content:**
+ **Table of contents:**
  - [Purpose](#pur)
  - [Similar Software](#sim)
  - [Available Literature](#lit)
@@ -117,7 +117,7 @@ Alternatively, the user can click "Create" to start a new board.
 
 ### Kanban board
 The user can add a new task/card, edit a card, reorder cards, and move cards between columns.\
-The user can edit card titles, card descriptions, column labels, and card assignment.
+The user can edit card titles, card descriptions, column labels, and card assignments.
 
 ![wireframe2](https://github.com/DonnellHarris/Kanban-2024/blob/master/Images/wireframe2.jpg)
 
@@ -293,23 +293,8 @@ The user can edit card titles, card descriptions, column labels, and card assign
 
 
 **Getting a user by UserId**
-![GetUser](https://github.com/DonnellHarris/Kanban-2024/blob/master/Images/GetUser.png)
+![GetData](https://github.com/DonnellHarris/Kanban-2024/blob/master/Images/GetData.png)
 
-
-**Getting a user's workspaces by UserId**
-![GetUserWorkspacs](https://github.com/DonnellHarris/Kanban-2024/blob/master/Images/GetUserWorkspaces.png)
-
-
-**Getting a workspace's boards by workspaceId**
-![GetWorkspaceBoards](https://github.com/DonnellHarris/Kanban-2024/blob/master/Images/GetWorkspaceBoards.png)
-
-
-**Getting a board's columns by boardId**
-![GetBoardColumns](https://github.com/DonnellHarris/Kanban-2024/blob/master/Images/GetBoardColumns.png)
-
-
-**Getting a column's tasks by columnId**
-![GetColumnTasks](https://github.com/DonnellHarris/Kanban-2024/blob/master/Images/GetColumnTasks.png)
 
 
 

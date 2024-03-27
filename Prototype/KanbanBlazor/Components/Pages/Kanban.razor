@@ -5,10 +5,12 @@
 
 <PageTitle>Kanban</PageTitle>
 
-<input @bind="Email" /> 
-
-@if (Email != null) 
-{ 
+@if (Email == null)
+{
+    <p>Enter your email address to load your resources:</p>
+    <input @bind="Email" placeholder="Enter Your Email"/>
+}
+else {
     <KanbanFrame Email="@Email" /> 
 }
   

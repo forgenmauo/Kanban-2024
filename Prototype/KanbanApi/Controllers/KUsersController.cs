@@ -36,7 +36,7 @@ namespace KanbanApi.Controllers
             var kanbanUser = await _context.KUsers.FirstOrDefaultAsync(u => u.Email == email)
                 ?? new KUser();
 
-            if (kanbanUser.Id != "Blank Id")
+            if (kanbanUser.Email != "Blank Email")
             {
 
                 kanbanUser.Workspaces = _context.KWorkspaces.Where(w => w.KUserId == kanbanUser.Id).ToList();
