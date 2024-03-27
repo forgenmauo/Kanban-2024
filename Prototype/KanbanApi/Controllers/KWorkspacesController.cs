@@ -21,6 +21,13 @@ namespace KanbanApi.Controllers
             _context = context;
         }
 
+        // GET: api/KWorkspaces
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<KWorkspace>>> GetAllWorkspaces()
+        {
+            return await _context.KWorkspaces.ToListAsync();
+        }
+
         // GET: api/KWorkspaces/userId
         [HttpGet("{userId}")]
         public async Task<ActionResult<IEnumerable<KWorkspace>>> GetKWorkspaces(string userId)
