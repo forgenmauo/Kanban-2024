@@ -9,7 +9,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddHttpClient<IDataAccess, DataAccess>(client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7032/");
+    client.BaseAddress = new Uri("https://kanbanapi2024.azurewebsites.net");
 });
 
 var app = builder.Build();
