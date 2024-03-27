@@ -292,7 +292,7 @@ The user can edit card titles, card descriptions, column labels, and card assign
 ![TaskModel](https://github.com/DonnellHarris/Kanban-2024/blob/master/Images/TaskModel.png)
 
 
-**Getting a user by UserId**
+**Getting a user's data**
 ![GetData](https://github.com/DonnellHarris/Kanban-2024/blob/master/Images/GetData.png)
 
 
