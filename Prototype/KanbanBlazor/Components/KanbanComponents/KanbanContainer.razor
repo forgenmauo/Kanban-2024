@@ -1,76 +1,17 @@
 ﻿@inject IDataAccess DataAccess
-@attribute [StreamRendering]
-@rendermode InteractiveServer
 
-@if(Loaded == false)
+@if (!User.Workspaces.Any())
 {
-    <p>Loading...</p>
+    <p>Loading Workspaces...</p>
 }
 else
-{ 
+{
     <CascadingValue Value="@User">
-        <Workspaces/>
+        <WorkspaceSelector />
     </CascadingValue>
 }
 
 @code {
-    [CascadingParameter]
-    public KUser? User { get; set; }
-    private bool Loaded { get; set; } = false;
-    protected override async Task OnInitializedAsync()
-    {
-        await GetCurrentUser(User.Email);
-        if (User.Email == "Blank Email") 
-        { 
-            await PostNewKanbanUser(); 
-        }
-        Loaded = true;
-    }
-
-    public async Task GetCurrentUser(string email)
-    {
-        User = await DataAccess.GetKanbanUser(email);
-    }
-
-    public async Task PostNewKanbanUser()
-    {
-        KUser NewUser = new KUser();
-        NewUser.Email = User.Email;
-        await DataAccess.PostKanbanUser(NewUser);
-        await PostKanbanWorkspace(NewUser);
-    }
-    
-    public async Task PostKanbanWorkspace(KUser user)
-    {
-        KWorkspace workspace = new KWorkspace();
-        workspace.KUserId = user.Id!;
-        await DataAccess.PostKanbanWorkspace(workspace);
-        await PostKanbanBoard(workspace.Id);
-    }
-
-    public async Task PostKanbanBoard(string workspaceId)
-    {
-        KBoard newBoard = new KBoard();
-        newBoard.KWorkspaceId = workspaceId;
-        await DataAccess.PostKanbanBoard(newBoard);
-        await PostKanbanColumn(newBoard.Id);
-    }
-
-    public async Task PostKanbanColumn(string boardId)
-    {
-        KColumn newColumn = new KColumn();
-        newColumn.KBoardId = boardId;
-        await DataAccess.PostKanbanColumn(newColumn);
-        await PostKanbanTask(newColumn.Id);
-    }
-
-    public async Task PostKanbanTask(string columnId)
-    {
-        KTask newTask = new KTask();
-        newTask.KColumnId = columnId;
-        await DataAccess.PostKanbanTask(newTask);
-    }
+    [CascadingParameter] public KUser? User { get; set; }
 
 }
-
-
