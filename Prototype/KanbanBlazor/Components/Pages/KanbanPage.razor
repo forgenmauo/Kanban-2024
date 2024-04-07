@@ -1,0 +1,24 @@
+﻿@page "/kanban-page"
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+
+<PageTitle>Kanban</PageTitle>
+<p>@User.Email</p>
+
+@if (User.Email == "Blank Email")
+{
+    <p>Enter your email address to load your resources:</p>
+    <input @bind="User.Email" placeholder="Enter Your Email"/>
+}
+else {
+    <CascadingValue Value="@User">
+        <KanbanContainer/> 
+    </CascadingValue>
+}
+  
+@code {
+    [CascadingParameter]
+    public KUser? User { get; set; }
+
+}

@@ -1,5 +1,6 @@
 using KanbanBlazor.Components;
 using DAL.Services;
+using DAL.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,8 @@ builder.Services.AddHttpClient<IDataAccess, DataAccess>(client =>
 {
     client.BaseAddress = new Uri("https://kanbanapi2024.azurewebsites.net");
 });
+
+builder.Services.AddCascadingValue(user => new KUser());
 
 var app = builder.Build();
 

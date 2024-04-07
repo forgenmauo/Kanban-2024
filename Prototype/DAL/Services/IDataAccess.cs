@@ -4,13 +4,12 @@ namespace DAL.Services
 {
     public interface IDataAccess
     {
-        Task<IEnumerable<KColumn>> GetBoardColumns(string boardId);
-        Task<IEnumerable<KTask>> GetColumnTasks(string columnId);
-        Task<IEnumerable<KUser>> GetKanbanUsers();
         Task<KUser> GetKanbanUser(string email);
+        Task<List<KWorkspace>> GetUserWorkspaces(string userId);
+        Task<List<KBoard>> GetWorkspaceBoards(string workspaceId);
+        Task<List<KColumn>> GetBoardColumns(string boardId);
+        Task<List<KTask>> GetColumnTasks(string columnId);
         
-        Task<IEnumerable<KWorkspace>> GetUserWorkspaces(string userId);
-        Task<IEnumerable<KBoard>> GetWorkspaceBoards(string workspaceId);
         Task PostKanbanUser(KUser user);
         Task PostKanbanWorkspace(KWorkspace workspace);
         Task PostKanbanBoard(KBoard board);

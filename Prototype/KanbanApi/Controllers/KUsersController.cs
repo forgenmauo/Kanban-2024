@@ -20,12 +20,6 @@ namespace KanbanApi.Controllers
         {
             _context = context;
         }
-        // GET: api/KUser
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<KUser>>> GetAllUsers()
-        {
-            return await _context.KUsers.ToListAsync();
-        }
       
         // GET: api/KUsers/email
         [HttpGet("{email}")]

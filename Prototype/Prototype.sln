@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KanbanApi", "KanbanApi\KanbanApi.csproj", "{EBA0AFB8-BA33-4A7A-A7A8-C109FCAF3412}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KanbanApi", "KanbanApi\KanbanApi.csproj", "{EBA0AFB8-BA33-4A7A-A7A8-C109FCAF3412}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{FE52C79A-375E-40E1-BBA4-DA833DF69A5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{FE52C79A-375E-40E1-BBA4-DA833DF69A5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KanbanBlazor", "KanbanBlazor\KanbanBlazor.csproj", "{5B5271AA-B76D-4409-ABF3-712E2BA11C23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KanbanBlazor", "KanbanBlazor\KanbanBlazor.csproj", "{5B5271AA-B76D-4409-ABF3-712E2BA11C23}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,97 @@
+﻿@inject IDataAccess DataAccess
+
+@if (!User.Workspaces.Any())
+{
+    <p>Loading Workspaces...</p>
+}
+else
+{
+    <div class="p-1 m-1">
+        <select @onchange="HandleWorkspaceChange" class="form-select w-25">
+            <option value="">Select a Workspace</option>
+            @foreach (var workspace in User.Workspaces)
+            {
+                <option value="@workspace.Id">@workspace.Name</option>
+            }
+            <option value="newWorkspace">Add New Workspace</option>
+        </select>
+    </div>
+}
+
+@if (SelectedWorkspace.KUserId != null)
+{
+    <div class="p-1 m-1">
+        <select @onchange="HandleBoardChange" class="form-select w-25">
+            <option value="">Select a Board</option>
+            @foreach (var board in SelectedWorkspace.Boards)
+            {
+                <option value="@board.Id">@board.Name</option>
+            }
+            <option value="newWorkspace">Add New Board</option>
+        </select>
+    </div>
+}
+
+@if (SelectedBoard.KWorkspaceId != null)
+{
+    <div class="p-1 m-1">
+        @foreach (var column in SelectedBoard.Columns)
+        {
+            <div class="col-4 p-1 m-1 bg-primary">
+                <h3>@column.Name</h3>
+                @foreach (var task in column.Tasks)
+                {
+                    <div class="card p-1 m-1 border-1">
+                        <h4>@task.Name</h4>
+                        <p>@task.Description</p>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [CascadingParameter] public KUser? User { get; set; }
+
+    private string SelectedWorkspaceId { get; set; } = "";
+    private KWorkspace SelectedWorkspace { get; set; } = new KWorkspace();
+
+    private string SelectedBoardId { get; set; } = "";
+    private KBoard SelectedBoard { get; set; } = new KBoard();
+
+    private void HandleWorkspaceChange(ChangeEventArgs e)
+    {
+        SelectedWorkspaceId = e.Value.ToString();
+        SelectedWorkspace = User.Workspaces.FirstOrDefault(a => a.Id.Equals(SelectedWorkspaceId)) ?? new KWorkspace();
+
+        if (SelectedWorkspaceId == "newWorkspace" || SelectedWorkspaceId == "")
+        {
+            SelectedWorkspace = new KWorkspace();
+            SelectedBoard = new KBoard();
+            /*
+            KWorkspace newWorkspace = new KWorkspace();
+            newWorkspace.KUserId = User.Id!;
+            DataAccess.PostKanbanWorkspace(newWorkspace);
+            User.Workspaces.Add(newWorkspace);
+        */
+        }
+    }
+
+    private void HandleBoardChange(ChangeEventArgs e)
+    {
+        SelectedBoardId = e.Value.ToString();
+        SelectedBoard = SelectedWorkspace.Boards.FirstOrDefault(a => a.Id.Equals(SelectedBoardId)) ?? new KBoard();
+        if (SelectedBoardId == "newBoard" || SelectedBoardId == "")
+    {
+            SelectedBoard = new KBoard();
+            /*
+            KBoard newBoard = new KBoard();
+            newBoard.KWorkspaceId = SelectedWorkspace.Id!;
+            DataAccess.PostKanbanBoard(newBoard);
+            SelectedWorkspace.Boards.Add(newBoard);
+            */
+        }
+      
+    }
+}

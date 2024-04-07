@@ -2,42 +2,40 @@
 @attribute [StreamRendering]
 @rendermode InteractiveServer
 
-<h3>Kanban </h3>
-@Email
-
-@if(ReturnedUser.Id == "Blank Id")
+@if(Loaded == false)
 {
     <p>Loading...</p>
 }
 else
 { 
-    <WorkspacesComponent UserId="@ReturnedUser.Id" /> 
+    <CascadingValue Value="@User">
+        <Workspaces/>
+    </CascadingValue>
 }
 
 @code {
-    [Parameter]
-    public required string Email { get; set; }
-
-    public KUser? ReturnedUser { get; set; } = new KUser();
-
+    [CascadingParameter]
+    public KUser? User { get; set; }
+    private bool Loaded { get; set; } = false;
     protected override async Task OnInitializedAsync()
     {
-        await GetCurrentUser(Email);
-        if (ReturnedUser.Email == "Blank Email") 
+        await GetCurrentUser(User.Email);
+        if (User.Email == "Blank Email") 
         { 
             await PostNewKanbanUser(); 
         }
+        Loaded = true;
     }
 
     public async Task GetCurrentUser(string email)
     {
-        ReturnedUser = await DataAccess.GetKanbanUser(email);
+        User = await DataAccess.GetKanbanUser(email);
     }
 
     public async Task PostNewKanbanUser()
     {
         KUser NewUser = new KUser();
-        NewUser.Email = Email;
+        NewUser.Email = User.Email;
         await DataAccess.PostKanbanUser(NewUser);
         await PostKanbanWorkspace(NewUser);
     }

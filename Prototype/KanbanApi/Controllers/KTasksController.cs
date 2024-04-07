@@ -24,7 +24,7 @@ namespace KanbanApi.Controllers
 
         // GET: api/KTasks/columnId
         [HttpGet("{columnId}")]
-        public async Task<ActionResult<IEnumerable<KTask>>> GetKTasks(string columnId)
+        public async Task<ActionResult<List<KTask>>> GetKTasks(string columnId)
         {
             List<KTask> tasks = await _context.KTasks
                 .Where(u => u.KColumnId == columnId)

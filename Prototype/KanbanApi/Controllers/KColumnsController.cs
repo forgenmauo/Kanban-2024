@@ -24,7 +24,7 @@ namespace KanbanApi.Controllers
 
         // GET: api/KColumns/boardId
         [HttpGet("{boardId}")]
-        public async Task<ActionResult<IEnumerable<KColumn>>> GetKColumns(string boardId)
+        public async Task<ActionResult<List<KColumn>>> GetKColumns(string boardId)
         {
             List<KColumn> columns = await _context.KColumns
                 .Where(u => u.KBoardId == boardId)

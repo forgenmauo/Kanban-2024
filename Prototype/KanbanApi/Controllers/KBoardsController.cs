@@ -24,7 +24,7 @@ namespace KanbanApi.Controllers
 
         // GET: api/KBoards/workspaceId
         [HttpGet("{workspaceId}")]
-        public async Task<ActionResult<IEnumerable<KBoard>>> GetKBoards(string workspaceId)
+        public async Task<ActionResult<List<KBoard>>> GetKBoards(string workspaceId)
         {
             List<KBoard> boards = await _context.KBoards
                 .Where(u => u.KWorkspaceId == workspaceId)

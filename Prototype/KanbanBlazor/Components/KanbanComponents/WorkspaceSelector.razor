@@ -1,0 +1,40 @@
+﻿@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+@if (!User.Workspaces.Any())
+{
+    <p>Loading Workspaces...</p>
+}
+else
+{
+    <label>Select a Workspace: </label>
+    <select @onchange="HandleWorkspaceChanged" class="form-select w-25">
+        @foreach (var workspace in User.Workspaces)
+        {
+            <option value="@workspace.Id">@workspace.Name</option>
+        }
+        <option value="new">Add New Workspace</option>
+    </select>
+}
+
+@code {
+    [CascadingParameter] public KUser? User { get; set; }
+
+    [Parameter] public EventCallback<KWorkspace> OnWorkspaceChanged { get; set; }
+
+    [Parameter] public RenderFragment LoadingContent { get; set; }
+
+    private async Task HandleWorkspaceChanged(ChangeEventArgs args)
+    {
+        if (OnWorkspaceChanged.HasDelegate)
+        {
+            if (args is not null && int.TryParse((string)args.Value, out var id))
+            {
+                var selectedWorkspace = User.Workspaces.FirstOrDefault(a => a.Id.Equals(id));
+
+                if (selectedWorkspace is not null)
+                    await OnWorkspaceChanged.InvokeAsync(selectedWorkspace);
+            }
+        }
+    }
+}
