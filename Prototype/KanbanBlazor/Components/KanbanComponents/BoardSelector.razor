@@ -33,8 +33,22 @@
         var b_id = e.Value.ToString();
         SelectedBoard = SelectedWorkspace.Boards.FirstOrDefault(a => a.Id.Equals(b_id)) ?? new KBoard();
 
-        if (b_id == "newBoard" || b_id == "") {
-            SelectedBoard = new KBoard();
+        switch (b_id) {
+            case "":
+                SelectedBoard = new KBoard();
+                break;
+            case "newBoard":
+                SelectedBoard.KWorkspaceId = SelectedWorkspace.Id;
+                CreateNewBoard();
+                break;
         }
+    }
+
+
+    //private BoardModal bModal;
+    private async Task CreateNewBoard() 
+    {
+        //bModal.Show(SelectedBoard, SelectedWorkspace.Id);
+        StateHasChanged();
     }
 }

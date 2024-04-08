@@ -1,0 +1,98 @@
+﻿@inject IDataAccess DataAccess
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+@if(Loaded == false) {
+    <p>Loading Your Data...</p>
+}
+else { 
+    <p>Welcome, @User.UserName</p>
+    <CascadingValue Value="@User">
+        <KanbanContainer/>
+    </CascadingValue>
+}
+
+@code {
+    [CascadingParameter] public KUser? User { get; set; } = new KUser();
+    private bool Loaded { get; set; } = false;
+
+    protected override async Task OnInitializedAsync() {
+        await GetCurrentUser(User.Email);
+        if (User.Email == "Blank Email") { 
+            await PostNewKanbanUser(); 
+        }
+        Loaded = true;
+    }
+
+    public async Task GetCurrentUser(string email) {
+        //User = await DataAccess.GetKanbanUser(email);
+        DemoData();
+    }
+
+    public async Task PostNewKanbanUser() {
+        KUser NewUser = new KUser();
+        NewUser.Email = User.Email;
+        await DataAccess.PostKanbanUser(NewUser);
+        await PostKanbanWorkspace(NewUser);
+    }
+    
+    public async Task PostKanbanWorkspace(KUser user) {
+        KWorkspace workspace = new KWorkspace();
+        workspace.KUserId = user.Id!;
+        await DataAccess.PostKanbanWorkspace(workspace);
+        await PostKanbanBoard(workspace.Id);
+    }
+
+    public async Task PostKanbanBoard(string workspaceId) {
+        KBoard newBoard = new KBoard();
+        newBoard.KWorkspaceId = workspaceId;
+        await DataAccess.PostKanbanBoard(newBoard);
+        await PostKanbanColumn(newBoard.Id);
+    }
+
+    public async Task PostKanbanColumn(string boardId) {
+        KColumn newColumn1 = new KColumn();
+        KColumn newColumn2 = new KColumn();
+        KColumn newColumn3 = new KColumn();
+        newColumn1.Name = "ToDo";
+        newColumn2.Name = "In Progress";
+        newColumn3.Name = "Done";
+        newColumn1.KBoardId = boardId;
+        newColumn2.KBoardId = boardId;
+        newColumn3.KBoardId = boardId;
+        await DataAccess.PostKanbanColumn(newColumn1);
+        await DataAccess.PostKanbanColumn(newColumn2);
+        await DataAccess.PostKanbanColumn(newColumn3);
+        await PostKanbanTask(newColumn1.Id);
+    }
+
+    public async Task PostKanbanTask(string columnId) {
+        KTask newTask = new KTask();
+        newTask.KColumnId = columnId;
+        await DataAccess.PostKanbanTask(newTask);
+    }
+
+    public void DemoData() {
+        User.UserName = "Demo User";
+        User.Email = "Demo Email";
+        User.Workspaces.Add(new KWorkspace());
+        User.Workspaces[0].Name = "Demo Workspace";
+        User.Workspaces[0].KUserId = User.Id;
+        User.Workspaces[0].Boards.Add(new KBoard());
+        User.Workspaces[0].Boards[0].Name = "Demo Board";
+        User.Workspaces[0].Boards[0].KWorkspaceId = User.Workspaces[0].Id;
+        User.Workspaces[0].Boards[0].Columns.Add(new KColumn());
+        User.Workspaces[0].Boards[0].Columns.Add(new KColumn());
+        User.Workspaces[0].Boards[0].Columns.Add(new KColumn());
+        User.Workspaces[0].Boards[0].Columns[0].Name = "ToDo";
+        User.Workspaces[0].Boards[0].Columns[1].Name = "In Progress";
+        User.Workspaces[0].Boards[0].Columns[2].Name = "Done";
+        User.Workspaces[0].Boards[0].Columns[0].KBoardId = User.Workspaces[0].Boards[0].Id;
+        User.Workspaces[0].Boards[0].Columns[1].KBoardId = User.Workspaces[0].Boards[0].Id;
+        User.Workspaces[0].Boards[0].Columns[2].KBoardId = User.Workspaces[0].Boards[0].Id;
+        User.Workspaces[0].Boards[0].Columns[0].Tasks.Add(new KTask());
+        StateHasChanged();
+    }
+
+}
+

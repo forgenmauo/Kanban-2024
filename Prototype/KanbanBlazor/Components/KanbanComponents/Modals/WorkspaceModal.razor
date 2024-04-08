@@ -1,0 +1,96 @@
+﻿<style>
+    .overlay {
+        position: fixed; /* Positioning and size */
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(128,128,128,0.5); /* color */
+        display: none; /* making it hidden by default */
+    }
+
+    .toast-container {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+    }
+</style>
+
+@{
+    var showClass = IsVisible ? "d-block" : "d-none";
+}
+
+
+<div class="overlay @showClass">
+    <div class="toast-container p-3 m-auto @showClass" data-bs-autohide="true" data-bs-delay="5000">
+        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Create New Workspace</strong>
+                <button type="button" class="btn-close" aria-label="Close" @onclick="Close"></button>
+            </div>
+
+            <div class="toast-body">
+                <EditForm Model="SelectedWorkspace" OnValidSubmit="Submit" FormName="CreateWorkspaceForm">
+                
+               
+                        <p>Workspace Id: @SelectedWorkspace.Id</p>
+                        <p>User Id: @SelectedWorkspace.KUserId</p>
+             
+                    <label>
+                        Name: <InputText @bind-Value="SelectedWorkspace!.Name" />
+                    </label>
+
+                    <button type="submit">Submit</button>
+                </EditForm>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter] public KUser? User { get; set; }
+
+    [CascadingParameter] public KWorkspace? SelectedWorkspace { get; set; }
+
+    [Parameter] public bool IsVisible { get; set; }
+
+    [Parameter] public EventCallback<bool> IsVisibleChanged { get; set; }
+
+
+    public void Show()
+    {
+        IsVisible = true;
+        StateHasChanged();
+    }
+
+    private void Close()
+    {
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+    private async Task Submit()
+    {
+        
+        User?.Workspaces?.Add(SelectedWorkspace);
+        User.Workspaces.Last().Boards.Add(new KBoard());
+        User.Workspaces.Last().Boards.Last().Columns.Add(new KColumn());
+        User.Workspaces.Last().Boards.Last().Columns.Add(new KColumn());
+        User.Workspaces.Last().Boards.Last().Columns.Add(new KColumn());
+        User.Workspaces.Last().Boards.Last().Columns[0].KBoardId = User.Workspaces.Last().Boards.Last().Id;
+        User.Workspaces.Last().Boards.Last().Columns[1].KBoardId = User.Workspaces.Last().Boards.Last().Id;
+        User.Workspaces.Last().Boards.Last().Columns[2].KBoardId = User.Workspaces.Last().Boards.Last().Id;
+        User.Workspaces.Last().Boards.Last().Columns[0].Name = "ToDo";
+        User.Workspaces.Last().Boards.Last().Columns[1].Name = "In Progress";
+        User.Workspaces.Last().Boards.Last().Columns[2].Name = "Done";
+        User.Workspaces.Last().Boards.Last().Columns.Last().Tasks.Add(new KTask());
+        User.Workspaces.Last().Boards.Last().Columns.Last().Tasks.Last().KColumnId = User.Workspaces.Last().Boards.Last().Columns.Last().Id;
+          
+
+        StateHasChanged();
+        Close();
+    }
+}

@@ -3,19 +3,8 @@
 @rendermode InteractiveServer
 
 <PageTitle>Kanban</PageTitle>
-<p>@User.Email</p>
 
-@if (User.Email == "Blank Email") {
-    <p>Enter your email address to load your resources:</p>
-    <input @bind="User.Email" placeholder="Enter Your Email"/>
-}
-else {
-    <CascadingValue Value="@User">
-        <UserDataLoader/> 
-    </CascadingValue>
-}
+<DataLoader/>
   
 @code {
-    [CascadingParameter]
-    public KUser? User { get; set; }
 }

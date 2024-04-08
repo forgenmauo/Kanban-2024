@@ -1,19 +1,26 @@
-﻿<div class="p-1 m-1">
-    @foreach (var column in SelectedBoard.Columns)
-    {
-        <div class="col-4 p-1 m-1 bg-primary">
-            <h3>@column.Name</h3>
-            @foreach (var task in column.Tasks)
-            {
-                <div class="card p-1 m-1 border-1">
-                    <h4>@task.Name</h4>
-                    <p>@task.Description</p>
-                </div>
-            }
-        </div>
-    }
+﻿@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+
+<div class="container-fluid">
+    <div class="row">
+        @foreach (var column in SelectedBoard.Columns)
+        {
+            <div class="card col-md-3 p-1 m-1 border-1 h-100 bg-primary">
+                <h3>@column.Name</h3>
+                @foreach (var task in column.Tasks)
+                {
+                    <div class="card p-1 m-1 border-1">
+                        <h4>@task.Name</h4>
+                        <p>@task.Description</p>
+                    </div>
+                }
+            </div>
+        }
+    </div>
 </div>
+
 @code {
     [CascadingParameter] public KUser? User { get; set; }
-    [CascadingParameter] public KBoard SelectedBoard { get; set; } = new KBoard();
+    [CascadingParameter] public KBoard SelectedBoard { get; set; }
 }
