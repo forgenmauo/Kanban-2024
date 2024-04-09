@@ -6,7 +6,6 @@
     <p>Loading Your Data...</p>
 }
 else { 
-    <p>Welcome, @User.UserName</p>
     <CascadingValue Value="@User">
         <KanbanContainer/>
     </CascadingValue>
@@ -84,7 +83,7 @@ else {
         User.Workspaces[0].Boards[0].Columns.Add(new KColumn());
         User.Workspaces[0].Boards[0].Columns.Add(new KColumn());
         User.Workspaces[0].Boards[0].Columns.Add(new KColumn());
-        User.Workspaces[0].Boards[0].Columns[0].Name = "ToDo";
+        User.Workspaces[0].Boards[0].Columns[0].Name = "Todo";
         User.Workspaces[0].Boards[0].Columns[1].Name = "In Progress";
         User.Workspaces[0].Boards[0].Columns[2].Name = "Done";
         User.Workspaces[0].Boards[0].Columns[0].KBoardId = User.Workspaces[0].Boards[0].Id;

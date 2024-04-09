@@ -5,7 +5,7 @@
     <p>Loading Boards...</p>
 } else {
     <div class="p-1 m-1">
-        <select @onchange="HandleBoardChange" class="form-select w-25">
+        <select @onchange="HandleBoardChange" class="form-select w-auto">
             <option value="">Select a Board</option>
             @foreach (var board in SelectedWorkspace.Boards)
             {
@@ -22,12 +22,19 @@
             <BoardComponent />
         </CascadingValue>
     </CascadingValue>
+
+    <CascadingValue Value="@User">
+        <CascadingValue Value="@SelectedBoard">
+            <BoardModal @ref="BoardModal" />
+        </CascadingValue>
+    </CascadingValue>
 }
 
 @code {
     [CascadingParameter] public KUser? User { get; set; }
     [CascadingParameter] public KWorkspace SelectedWorkspace { get; set; } = new KWorkspace();
     [CascadingParameter] public KBoard SelectedBoard { get; set; } = new KBoard();
+    public BoardModal BoardModal;
 
     private void HandleBoardChange(ChangeEventArgs e) {
         var b_id = e.Value.ToString();
@@ -36,19 +43,22 @@
         switch (b_id) {
             case "":
                 SelectedBoard = new KBoard();
+                SelectedBoard.KWorkspaceId = SelectedWorkspace.Id;
                 break;
             case "newBoard":
+                SelectedBoard = new KBoard();
                 SelectedBoard.KWorkspaceId = SelectedWorkspace.Id;
                 CreateNewBoard();
                 break;
         }
     }
 
-
-    //private BoardModal bModal;
-    private async Task CreateNewBoard() 
-    {
-        //bModal.Show(SelectedBoard, SelectedWorkspace.Id);
+    private async Task CreateNewBoard(){
+        BoardModal.Show();
+        while (BoardModal.IsVisible)
+        {
+            await Task.Delay(100);
+        }
         StateHasChanged();
     }
 }

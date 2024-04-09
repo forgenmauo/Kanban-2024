@@ -27,19 +27,19 @@
     <div class="toast-container p-3 m-auto @showClass" data-bs-autohide="true" data-bs-delay="5000">
         <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
-                <strong class="me-auto">Create New Workspace</strong>
+                <strong class="me-auto">Create New Board</strong>
                 <button type="button" class="btn-close" aria-label="Close" @onclick="Close"></button>
             </div>
 
             <div class="toast-body">
-                <EditForm Model="SelectedWorkspace" OnValidSubmit="Submit" FormName="CreateWorkspaceForm">
-                
-               
-                        <p>Workspace Id: @SelectedWorkspace.Id</p>
-                        <p>User Id: @SelectedWorkspace.KUserId</p>
-             
+                <EditForm Model="SelectedBoard" OnValidSubmit="Submit" FormName="CreateBoardForm">
+
+
+                    <p>Board Id: @SelectedBoard.Id</p>
+                    <p>Workspace Id: @SelectedBoard.KWorkspaceId</p>
+
                     <label>
-                        Name: <InputText @bind-Value="SelectedWorkspace!.Name" />
+                        Name: <InputText @bind-Value="SelectedBoard!.Name" />
                     </label>
 
                     <button type="submit">Submit</button>
@@ -53,7 +53,7 @@
 @code {
     [CascadingParameter] public KUser? User { get; set; }
 
-    [CascadingParameter] public KWorkspace? SelectedWorkspace { get; set; }
+    [CascadingParameter] public KBoard? SelectedBoard { get; set; }
 
     [Parameter] public bool IsVisible { get; set; }
 
@@ -74,10 +74,7 @@
 
     private async Task Submit()
     {
-        
-        User?.Workspaces?.Add(SelectedWorkspace);
-        User.Workspaces.Last().Boards.Add(new KBoard());
-        User.Workspaces.Last().Boards.Last().KWorkspaceId = User?.Workspaces.Last().Id;
+        User.Workspaces.Last().Boards.Add(SelectedBoard);
         User.Workspaces.Last().Boards.Last().Columns.Add(new KColumn());
         User.Workspaces.Last().Boards.Last().Columns.Add(new KColumn());
         User.Workspaces.Last().Boards.Last().Columns.Add(new KColumn());
@@ -89,9 +86,10 @@
         User.Workspaces.Last().Boards.Last().Columns[2].Name = "Done";
         User.Workspaces.Last().Boards.Last().Columns[0].Tasks.Add(new KTask());
         User.Workspaces.Last().Boards.Last().Columns[0].Tasks[0].KColumnId = User.Workspaces.Last().Boards.Last().Columns[0].Id;
-          
+
 
         StateHasChanged();
         Close();
     }
 }
+
