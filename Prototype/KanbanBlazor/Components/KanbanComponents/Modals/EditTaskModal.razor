@@ -15,6 +15,7 @@
         left: 50%;
         transform: translate(-50%, -50%);
         z-index: 1000;
+        background-color: lightgray;
     }
 </style>
 
@@ -27,20 +28,29 @@
     <div class="toast-container p-3 m-auto @showClass" data-bs-autohide="true" data-bs-delay="5000">
         <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
-                <strong class="me-auto">Create New Workspace</strong>
+                <strong class="me-auto">Edit Task</strong>
                 <button type="button" class="btn-close" aria-label="Close" @onclick="Close"></button>
             </div>
 
             <div class="toast-body">
-                <EditForm Model="SelectedWorkspace" OnValidSubmit="Submit" FormName="CreateWorkspaceForm">
-                        <p>Workspace Id: @SelectedWorkspace.Id</p>
-                        <p>User Id: @SelectedWorkspace.KUserId</p>
-             
+                <EditForm Model="SelectedTask" OnValidSubmit="Submit" FormName="EditTaskForm">
+
+
+                    <p>Task Id: @SelectedTask.Id</p>
+                    <p>Column Id: @SelectedTask.KColumnId</p>
+
                     <label>
-                        Name: <InputText @bind-Value="SelectedWorkspace!.Name" />
+                        Name: <InputText @bind-Value="SelectedTask!.Name" />
                     </label>
 
+                    <label>
+                        Description: <InputText @bind-Value="SelectedTask!.Description" />
+                    </label>
+
+                    <p>Position: @SelectedTask.Position</p>
+
                     <button type="submit">Submit</button>
+                    <button class="btn btn-danger" @onclick="DeleteTask">Delete</button>
                 </EditForm>
 
             </div>
@@ -50,8 +60,10 @@
 
 @code {
     [CascadingParameter] public KUser? User { get; set; }
-
     [CascadingParameter] public KWorkspace? SelectedWorkspace { get; set; }
+    [CascadingParameter] public KBoard? SelectedBoard { get; set; }
+    [CascadingParameter] public KColumn? SelectedColumn { get; set; }
+    [CascadingParameter] public KTask? SelectedTask { get; set; }
 
     [Parameter] public bool IsVisible { get; set; }
 
@@ -72,21 +84,15 @@
 
     private async Task Submit()
     {
-        User.Workspaces.Add(SelectedWorkspace);
-        User.Workspaces.Last().Boards.Add(new KBoard());
-        User.Workspaces.Last().Boards.Last().KWorkspaceId = User?.Workspaces.Last().Id;
-        User.Workspaces.Last().Boards.Last().Columns.Add(new KColumn());
-        User.Workspaces.Last().Boards.Last().Columns.Add(new KColumn());
-        User.Workspaces.Last().Boards.Last().Columns.Add(new KColumn());
-        User.Workspaces.Last().Boards.Last().Columns[0].KBoardId = User?.Workspaces.Last().Boards.Last().Id;
-        User.Workspaces.Last().Boards.Last().Columns[1].KBoardId = User?.Workspaces.Last().Boards.Last().Id;
-        User.Workspaces.Last().Boards.Last().Columns[2].KBoardId = User?.Workspaces.Last().Boards.Last().Id;
-        User.Workspaces.Last().Boards.Last().Columns[0].Name = "Todo";
-        User.Workspaces.Last().Boards.Last().Columns[1].Name = "In Progress";
-        User.Workspaces.Last().Boards.Last().Columns[2].Name = "Done";
-        User.Workspaces.Last().Boards.Last().Columns[0].Tasks.Add(new KTask());
-        User.Workspaces.Last().Boards.Last().Columns[0].Tasks[0].KColumnId = User.Workspaces.Last().Boards.Last().Columns[0].Id;
+        StateHasChanged();
+        Close();
+    }
+
+    private async Task DeleteTask()
+    {
         StateHasChanged();
         Close();
     }
 }
+
+

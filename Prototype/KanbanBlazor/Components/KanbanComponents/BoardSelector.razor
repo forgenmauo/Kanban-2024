@@ -5,38 +5,54 @@
     <p>Loading Boards...</p>
 } else {
     <div class="p-1 m-1">
-        <select @onchange="HandleBoardChange" class="form-select w-auto">
-            <option value="">Select a Board</option>
-            @foreach (var board in SelectedWorkspace.Boards)
-            {
-                <option value="@board.Id">@board.Name</option>
-            }
-            <option value="newBoard">Add New Board</option>
-        </select>
+        <table>
+           <tr>
+                <td><h3>Board: </h3></td>
+                <td>
+                    <select @onchange="HandleBoardChange" class="form-select w-auto">
+                        <option selected>Select a Board</option>
+                        @foreach (var board in SelectedWorkspace.Boards)
+                        {
+                            <option value="@board.Id">@board.Name</option>
+                        }
+                        <option value="newBoard">Add New Board</option>
+                    </select>
+                </td>
+                <td>
+                    <button class="btn btn-primary" @onclick="(() => UpdateBoard(SelectedBoard))">...</button>
+                </td>
+            </tr>
+        </table>
     </div>
 }
 
-@if (SelectedBoard.KWorkspaceId != null) {
-    <CascadingValue Value="@User">
-        <CascadingValue Value="@SelectedBoard">
-            <BoardComponent />
-        </CascadingValue>
+<CascadingValue Value="@User">
+    <CascadingValue Value="@SelectedBoard">
+        <BoardComponent />
     </CascadingValue>
+</CascadingValue>
 
-    <CascadingValue Value="@User">
-        <CascadingValue Value="@SelectedBoard">
-            <BoardModal @ref="BoardModal" />
-        </CascadingValue>
+<CascadingValue Value="@User">
+    <CascadingValue Value="@SelectedBoard">
+        <BoardModal @ref="BoardModal" />
     </CascadingValue>
-}
+</CascadingValue>
+
+<CascadingValue Value="@User">
+    <CascadingValue Value="@SelectedBoard">
+        <EditBoardModal @ref="EditBoardModal" />
+    </CascadingValue>
+</CascadingValue>
 
 @code {
     [CascadingParameter] public KUser? User { get; set; }
     [CascadingParameter] public KWorkspace SelectedWorkspace { get; set; } = new KWorkspace();
     [CascadingParameter] public KBoard SelectedBoard { get; set; } = new KBoard();
     public BoardModal BoardModal;
+    public EditBoardModal EditBoardModal;
 
     private void HandleBoardChange(ChangeEventArgs e) {
+        
         var b_id = e.Value.ToString();
         SelectedBoard = SelectedWorkspace.Boards.FirstOrDefault(a => a.Id.Equals(b_id)) ?? new KBoard();
 
@@ -56,6 +72,16 @@
     private async Task CreateNewBoard(){
         BoardModal.Show();
         while (BoardModal.IsVisible)
+        {
+            await Task.Delay(100);
+        }
+        StateHasChanged();
+    }
+
+    private async Task UpdateBoard(KBoard board){
+        SelectedBoard = board;
+        EditBoardModal.Show();
+        while (EditBoardModal.IsVisible)
         {
             await Task.Delay(100);
         }

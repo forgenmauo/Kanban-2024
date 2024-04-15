@@ -90,6 +90,7 @@ else {
         User.Workspaces[0].Boards[0].Columns[1].KBoardId = User.Workspaces[0].Boards[0].Id;
         User.Workspaces[0].Boards[0].Columns[2].KBoardId = User.Workspaces[0].Boards[0].Id;
         User.Workspaces[0].Boards[0].Columns[0].Tasks.Add(new KTask());
+        User.Workspaces[0].Boards[0].Columns[0].Tasks[0].KColumnId = User.Workspaces[0].Boards[0].Columns[0].Id;
         StateHasChanged();
     }
 

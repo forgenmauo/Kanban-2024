@@ -6,64 +6,94 @@
 }
 else {
     <div class="p-1 m-1">
-        <select @onchange="HandleWorkspaceChange" class="form-select w-auto">
-            <option value="">Select a Workspace</option>
-            @foreach (var workspace in User.Workspaces)
-            {
-                <option value="@workspace.Id">@workspace.Name</option>
-            }
-            <option value="newWorkspace">Add New Workspace</option>
-        </select>
+        <table>
+            <tr>
+                <td><h3>Workspace: </h3> </td>
+                <td>
+                    <select id="workspace-selector" @onchange="HandleWorkspaceChange" class="form-select w-auto">
+                        @{
+                            User.Workspaces.Reverse();
+                        }
+                        <option selected disabled>Select Workspace</option>
+                        @foreach (var workspace in User.Workspaces)
+                        {
+                            <option value="@workspace.Id">@workspace.Name</option>
+                        }
+                        @{
+                            User.Workspaces.Reverse();
+                        }
+                    </select>
+                </td>
+                <td>
+                    <button class="btn btn-primary" @onclick="(() => UpdateWorkspace(SelectedWorkspace))">...</button>
+                </td>
+                <td>
+                    or <button class="btn btn-primary" @onclick="CreateNewWorkspace">Add Workspace</button>
+                </td>
+
+            </tr>
+        </table>
+        
     </div>
 }
-@if (SelectedWorkspace.KUserId != null) {
-    <CascadingValue Value="@User">
-        <CascadingValue Value="@SelectedWorkspace">
-            <BoardSelector />
-        </CascadingValue>
-    </CascadingValue>
 
-    <CascadingValue Value="@User">
-        <CascadingValue Value="@SelectedWorkspace">
-            <WorkspaceModal @ref="WorkspaceModal" />
-        </CascadingValue>
+<CascadingValue Value="@User">
+    <CascadingValue Value="@SelectedWorkspace">
+        <BoardSelector />
     </CascadingValue>
-}
+</CascadingValue>
+
+<CascadingValue Value="@User">
+    <CascadingValue Value="@SelectedWorkspace">
+        <WorkspaceModal @ref="WorkspaceModal" />
+    </CascadingValue>
+</CascadingValue>
+
+<CascadingValue Value="@User">
+    <CascadingValue Value="@SelectedWorkspace">
+        <EditWorkspaceModal @ref="EditWorkspaceModal" />
+    </CascadingValue>
+</CascadingValue>
+    
         
 
 
 
 @code {
-    [CascadingParameter] public KUser? User { get; set; }
+    [CascadingParameter] public required KUser User { get; set; }
     [CascadingParameter] public KWorkspace SelectedWorkspace { get; set; } = new KWorkspace();
-    public WorkspaceModal? WorkspaceModal;
 
-    
+    public WorkspaceModal? WorkspaceModal;
+    public EditWorkspaceModal? EditWorkspaceModal;
+
+
 
     private void HandleWorkspaceChange(ChangeEventArgs e) {
         var w_id = e.Value?.ToString();
         SelectedWorkspace = User?.Workspaces.FirstOrDefault(a => a.Id.Equals(w_id)) ?? new KWorkspace();
-        switch (w_id) {
-            case "":
-                SelectedWorkspace = new KWorkspace();
-                SelectedWorkspace.KUserId = User?.Id;
-                break;
-            case "newWorkspace":
-                SelectedWorkspace = new KWorkspace();
-                SelectedWorkspace.KUserId = User?.Id;
-                CreateNewWorkspace();
-                break;
-            
-        }
     }
 
     private async Task CreateNewWorkspace() {
+        SelectedWorkspace = new KWorkspace();
+        SelectedWorkspace.KUserId = User?.Id;
         WorkspaceModal!.Show();
         while (WorkspaceModal.IsVisible) {
             await Task.Delay(100);
         }
+
+        StateHasChanged();
+
+
+    }
+
+    private async Task UpdateWorkspace(KWorkspace workspace) {
+        EditWorkspaceModal!.Show();
+        while (EditWorkspaceModal.IsVisible) {
+            await Task.Delay(100);
+        }
         StateHasChanged();
     }
+   
 
 
 

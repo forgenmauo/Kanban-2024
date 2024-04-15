@@ -28,22 +28,24 @@
     <div class="toast-container p-3 m-auto @showClass" data-bs-autohide="true" data-bs-delay="5000">
         <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
-                <strong class="me-auto">Create New Board</strong>
+                <strong class="me-auto">Edit Column</strong>
                 <button type="button" class="btn-close" aria-label="Close" @onclick="Close"></button>
             </div>
 
             <div class="toast-body">
-                <EditForm Model="SelectedBoard" OnValidSubmit="Submit" FormName="CreateBoardForm">
+                <EditForm Model="SelectedColumn" OnValidSubmit="Submit" FormName="EditColumnForm">
 
 
-                    <p>Board Id: @SelectedBoard.Id</p>
-                    <p>Workspace Id: @SelectedBoard.KWorkspaceId</p>
+                    <p>Column Id: @SelectedColumn.Id</p>
+                    <p>Board Id: @SelectedColumn.KBoardId</p>
 
                     <label>
-                        Name: <InputText @bind-Value="SelectedBoard!.Name" />
+                        Name: <InputText @bind-Value="SelectedColumn!.Name" />
                     </label>
 
                     <button type="submit">Submit</button>
+
+                    <button class="btn btn-danger" @onclick="DeleteColumn">Delete</button>
                 </EditForm>
 
             </div>
@@ -54,7 +56,7 @@
 @code {
     [CascadingParameter] public KUser? User { get; set; }
 
-    [CascadingParameter] public KBoard? SelectedBoard { get; set; }
+    [CascadingParameter] public KColumn? SelectedColumn { get; set; }
 
     [Parameter] public bool IsVisible { get; set; }
 
@@ -75,19 +77,12 @@
 
     private async Task Submit()
     {
-        User.Workspaces.Last().Boards.Add(SelectedBoard);
-        User.Workspaces.Last().Boards.Last().Columns.Add(new KColumn());
-        User.Workspaces.Last().Boards.Last().Columns.Add(new KColumn());
-        User.Workspaces.Last().Boards.Last().Columns.Add(new KColumn());
-        User.Workspaces.Last().Boards.Last().Columns[0].KBoardId = User?.Workspaces.Last().Boards.Last().Id;
-        User.Workspaces.Last().Boards.Last().Columns[1].KBoardId = User?.Workspaces.Last().Boards.Last().Id;
-        User.Workspaces.Last().Boards.Last().Columns[2].KBoardId = User?.Workspaces.Last().Boards.Last().Id;
-        User.Workspaces.Last().Boards.Last().Columns[0].Name = "Todo";
-        User.Workspaces.Last().Boards.Last().Columns[1].Name = "In Progress";
-        User.Workspaces.Last().Boards.Last().Columns[2].Name = "Done";
-        User.Workspaces.Last().Boards.Last().Columns[0].Tasks.Add(new KTask());
-        User.Workspaces.Last().Boards.Last().Columns[0].Tasks[0].KColumnId = User.Workspaces.Last().Boards.Last().Columns[0].Id;
+        StateHasChanged();
+        Close();
+    }
 
+    private async Task DeleteColumn()
+    {
 
         StateHasChanged();
         Close();
