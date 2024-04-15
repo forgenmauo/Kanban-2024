@@ -6,7 +6,7 @@
         public string Name { get; set; } = "Untitled Task";
         public string Description { get; set; } = "Task Description";
         public int Position { get; set; } = 0;
-        public string KColumnId { get; set; }
+        public string? KColumnId { get; set; }
 
     }
 }
