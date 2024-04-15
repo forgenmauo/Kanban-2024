@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{0
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KanbanApi", "KanbanApi\KanbanApi.csproj", "{E6682018-5E1B-4239-8321-F82C0C6215AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KanbanBlazor", "KanbanBlazor\KanbanBlazor.csproj", "{535E2EBF-83B9-4D9C-BA6F-C6A99A31474B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KanbanBlazor", "KanbanBlazor\KanbanBlazor.csproj", "{535E2EBF-83B9-4D9C-BA6F-C6A99A31474B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
