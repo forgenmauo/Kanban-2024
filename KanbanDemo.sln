@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34622.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{048E6E29-A652-4842-AA6B-A1E73F0AAF66}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KanbanApi", "KanbanApi\KanbanApi.csproj", "{E6682018-5E1B-4239-8321-F82C0C6215AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KanbanBlazor", "KanbanBlazor\KanbanBlazor.csproj", "{535E2EBF-83B9-4D9C-BA6F-C6A99A31474B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{048E6E29-A652-4842-AA6B-A1E73F0AAF66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{048E6E29-A652-4842-AA6B-A1E73F0AAF66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{048E6E29-A652-4842-AA6B-A1E73F0AAF66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{048E6E29-A652-4842-AA6B-A1E73F0AAF66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6682018-5E1B-4239-8321-F82C0C6215AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6682018-5E1B-4239-8321-F82C0C6215AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6682018-5E1B-4239-8321-F82C0C6215AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6682018-5E1B-4239-8321-F82C0C6215AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{535E2EBF-83B9-4D9C-BA6F-C6A99A31474B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{535E2EBF-83B9-4D9C-BA6F-C6A99A31474B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{535E2EBF-83B9-4D9C-BA6F-C6A99A31474B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{535E2EBF-83B9-4D9C-BA6F-C6A99A31474B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D3C58BC8-3B59-4C2E-AA3E-AF040CA6F08F}
+	EndGlobalSection
+EndGlobal
