@@ -1,0 +1,58 @@
+﻿@page "/kanban"
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Authorization
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IDataAccess DataAccess
+@attribute [Authorize]
+
+<PageTitle>Kanban</PageTitle>
+
+<AuthorizeView>
+    Hello @context.User.Identity?.Name!
+</AuthorizeView>
+
+@if (Loaded == false)
+{
+    <p>Loading Your Data...</p>
+}
+else
+{   
+    <CascadingValue Value="@User">
+        <CascadingValue Value="@SelectedWorkspace">
+            <WorkspaceSelector OnWorkspaceChanged="OnWorkspaceChanged" />
+            <WorkspaceComponent />
+        </CascadingValue>
+    </CascadingValue>
+    
+}
+@code {
+    [CascadingParameter] public KUser? User { get; set; } = new KUser();
+    [CascadingParameter] public KWorkspace? SelectedWorkspace { get; set; } = new KWorkspace();
+
+    public string? UserId { get; set; } = "";
+    public string? Email { get; set; } = "";
+    public bool? Loaded { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAppUserData();
+        User = await DataAccess.GetKanbanUser(Email!) ?? new KUser();
+        Loaded = true;
+    }
+
+    public async Task GetAppUserData()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        UserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+        Email = user.FindFirstValue(ClaimTypes.Email);
+    }
+
+    private async Task OnWorkspaceChanged(string w_id)
+    {
+        SelectedWorkspace = User?.Workspaces.FirstOrDefault(a => a.Id.Equals(w_id)) ?? new KWorkspace();
+        StateHasChanged();
+    }
+}
