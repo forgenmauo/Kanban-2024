@@ -3,39 +3,32 @@
 @rendermode InteractiveServer
 
 @if(Loaded == false) {
-    <p>Loading Your Data...</p>
-}
-else { 
-
-    <CascadingValue Value="@User">
-        <KanbanContainer/>
-    </CascadingValue>
+    <p>Loading Your Demo Data...</p>
 }
 
 @code {
-    
-    [CascadingParameter] public KUser? User { get; set; } = new KUser();
-   
+
+    [CascadingParameter] public required KUser User { get; set; }
+
     private bool Loaded { get; set; } = false;
 
     protected override async Task OnInitializedAsync() {
-        await GetCurrentUser(User.Email);
+        await GetCurrentUser(User.Id);
         if (User.Email == "Blank Email") { 
             await PostNewKanbanUser(); 
         }
         Loaded = true;
     }
 
-    public async Task GetCurrentUser(string email) {
-        //User = await DataAccess.GetKanbanUser(email);
-        DemoData();
+    public async Task GetCurrentUser(string id) {
+        User = await DataAccess.GetKanbanUser(id);
     }
 
     public async Task PostNewKanbanUser() {
-        KUser NewUser = new KUser();
-        NewUser.Email = User.Email;
-        await DataAccess.PostKanbanUser(NewUser);
-        await PostKanbanWorkspace(NewUser);
+        User.UserName = User.Email;
+        User.Email = User.Email.ToUpper();
+        await DataAccess.PostKanbanUser(User);
+        await PostKanbanWorkspace(User);
     }
     
     public async Task PostKanbanWorkspace(KUser user) {
@@ -74,6 +67,7 @@ else {
         await DataAccess.PostKanbanTask(newTask);
     }
 
+    /*
     public void DemoData() {
         User.UserName = "Demo User";
         User.Email = "Demo Email";
@@ -96,5 +90,6 @@ else {
         User.Workspaces[0].Boards[0].Columns[0].Tasks[0].KColumnId = User.Workspaces[0].Boards[0].Columns[0].Id;
         StateHasChanged();
     }
+    */
 }
 

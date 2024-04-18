@@ -4,7 +4,8 @@ namespace DAL.Services
 {
     public interface IDataAccess
     {
-        Task<KUser> GetKanbanUser(string email);
+
+        Task<KUser> GetKanbanUser(string id);
         Task<List<KWorkspace>> GetUserWorkspaces(string userId);
         Task<List<KBoard>> GetWorkspaceBoards(string workspaceId);
         Task<List<KColumn>> GetBoardColumns(string boardId);

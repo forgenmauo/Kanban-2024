@@ -21,18 +21,13 @@ namespace KanbanApi.Controllers
             _context = context;
         }
       
-        // GET: api/KUsers/email
-        [HttpGet("{email}")]
-        public async Task<ActionResult<KUser>> GetKUser(string email)
+        // GET: api/KUsers/id
+        [HttpGet("{id}")]
+        public async Task<ActionResult<KUser>> GetKUser(string id)
         {
-            
-            //get the user from the database
-            var kanbanUser = await _context.KUsers.FirstOrDefaultAsync(u => u.Email == email)
-                ?? new KUser();
-
-            if (kanbanUser.Email != "Blank Email")
+            if (KUserExists(id))
             {
-
+                var kanbanUser = await _context.KUsers.FindAsync(id);
                 kanbanUser.Workspaces = _context.KWorkspaces.Where(w => w.KUserId == kanbanUser.Id).ToList();
                 kanbanUser.Workspaces.ForEach(w =>
                 {
@@ -46,9 +41,17 @@ namespace KanbanApi.Controllers
                         });
                     });
                 });
+                return kanbanUser;
             }
+            else
+            {
+                var kanbanUser = await _context.KUsers.FindAsync(id) ?? new KUser();
+                kanbanUser.Id = id;
+                return kanbanUser;
+            }
+            
 
-            return kanbanUser;
+           
         }
 
         // PUT: api/KUsers/5

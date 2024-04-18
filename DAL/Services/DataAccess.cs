@@ -19,7 +19,7 @@ namespace DAL.Services
             this.httpClient = httpClient;
         }
 
-        public async Task<KUser> GetKanbanUser(string email) => await httpClient.GetFromJsonAsync<KUser>($"api/KUsers/{email}");
+        public async Task<KUser> GetKanbanUser(string id) => await httpClient.GetFromJsonAsync<KUser>($"api/KUsers/{id}");
         public async Task<List<KWorkspace>> GetUserWorkspaces(string userId) => await httpClient.GetFromJsonAsync<List<KWorkspace>>($"api/KWorkspaces/{userId}");
         public async Task<List<KBoard>> GetWorkspaceBoards(string workspaceId) => await httpClient.GetFromJsonAsync<List<KBoard>>($"api/KBoards/{workspaceId}");
         public async Task<List<KColumn>> GetBoardColumns(string boardId) => await httpClient.GetFromJsonAsync<List<KColumn>>($"api/KColumns/{boardId}");

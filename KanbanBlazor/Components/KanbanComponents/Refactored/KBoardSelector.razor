@@ -1,0 +1,31 @@
+﻿<style>
+    .selector {
+        display: flex;
+        align-items: flex-start;
+    }
+</style>
+
+<div class="selector">
+    <select id="board-selector" @onchange="ChangeBoard" class="form-select w-auto">
+        <option selected disabled>Select Board</option>
+        @foreach (var board in SelectedWorkspace.Boards)
+        {
+            <option value="@board.Id">@board.Name</option>
+        }
+    </select>
+</div>
+
+@code {
+    [Parameter] public required KWorkspace SelectedWorkspace { get; set; }
+    [Parameter] public EventCallback<KBoard> OnBoardChanged { get; set; }
+
+    private KBoard? selectedBoard { get; set; }
+
+    public async Task ChangeBoard(ChangeEventArgs e)
+    {
+        var boardId = e.Value.ToString();
+        selectedBoard = SelectedWorkspace.Boards.FirstOrDefault(w => w.Id == boardId);
+        await OnBoardChanged.InvokeAsync(selectedBoard);
+    }
+
+}

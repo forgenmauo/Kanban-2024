@@ -18,4 +18,8 @@
     <ProjectReference Include="..\DAL\DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\KanbanComponents\Refactored\Modals\" />
+  </ItemGroup>
+
 </Project>
