@@ -1,0 +1,46 @@
+﻿@attribute [StreamRendering]
+@rendermode InteractiveServer
+<script>
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data));
+    }
+</script>
+<style>
+    /* The heart of the matter */
+
+    .horizontal-scrollable > .row {
+        overflow-x: auto;
+        white-space: nowrap;
+        flex-wrap: nowrap;
+    }
+
+        .horizontal-scrollable > .row > .col-3 {
+            display: inline-block;
+            min-width: 300px;
+            float: none;
+
+        }
+</style>
+@if (SelectedBoard.KWorkspaceId != null)
+{
+    <div class="container vh-100 horizontal-scrollable">
+        <div class="row w-100 h-75">
+            <KColumnsComponent SelectedBoard="@SelectedBoard" />"
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public KBoard SelectedBoard { get; set; }
+
+}

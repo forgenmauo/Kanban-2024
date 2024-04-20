@@ -1,0 +1,83 @@
+﻿@inject IDataAccess DataAccess
+
+@code {
+    [Parameter] public required KUser User { get; set; }
+    [Parameter] public EventCallback<KUser> OnDataLoaded { get; set; }
+
+    private KUser? NewUser { get; set; } = new KUser();
+    public bool Loaded { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCurrentUser(User.Id);
+        if (NewUser.Email == "Blank Email")
+        {
+            await PostNewKanbanUser();
+            await GetCurrentUser(User.Id);
+        }
+        User = NewUser;
+        await OnDataLoaded.InvokeAsync(User);
+        Loaded = true;
+    }
+
+    private async Task GetCurrentUser(string id)
+    {
+        NewUser = await DataAccess.GetKanbanUser(id);
+    }
+
+    private async Task PostNewKanbanUser()
+    {
+        NewUser.Id = User.Id;
+        NewUser.UserName = User.Email;
+        NewUser.Email = User.Email.ToUpper();
+        await DataAccess.PostKanbanUser(NewUser);
+        await PostKanbanWorkspace(NewUser);
+    }
+
+    private async Task PostKanbanWorkspace(KUser user)
+    {
+        KWorkspace workspace = new KWorkspace();
+        workspace.Name = "Demo Workspace";
+        workspace.KUserId = user.Id!;
+        await DataAccess.PostKanbanWorkspace(workspace);
+        await PostKanbanBoard(workspace.Id);
+    }
+
+    private async Task PostKanbanBoard(string workspaceId)
+    {
+        KBoard newBoard = new KBoard();
+        newBoard.Name = "Demo Board";
+        newBoard.KWorkspaceId = workspaceId;
+        await DataAccess.PostKanbanBoard(newBoard);
+        await PostKanbanColumn(newBoard.Id);
+    }
+
+    private async Task PostKanbanColumn(string boardId)
+    {
+        KColumn newColumn1 = new KColumn();
+        KColumn newColumn2 = new KColumn();
+        KColumn newColumn3 = new KColumn();
+        newColumn1.Name = "Todo";
+        newColumn2.Name = "In Progress";
+        newColumn3.Name = "Done";
+        newColumn1.KBoardId = boardId;
+        newColumn2.KBoardId = boardId;
+        newColumn3.KBoardId = boardId;
+        await DataAccess.PostKanbanColumn(newColumn1);
+        await DataAccess.PostKanbanColumn(newColumn2);
+        await DataAccess.PostKanbanColumn(newColumn3);
+        await PostKanbanTask(newColumn1.Id);
+    }
+
+    private async Task PostKanbanTask(string columnId)
+    {
+        KTask newTask = new KTask();
+        newTask.Name = "Task 1";
+        newTask.Description = "This is a task";
+        newTask.KColumnId = columnId;
+        await DataAccess.PostKanbanTask(newTask);
+    }
+
+}
+
+

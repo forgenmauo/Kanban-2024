@@ -3,40 +3,42 @@
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Authorization
 @using System.Security.Claims
-@using KanbanBlazor.Components.KanbanComponents.Refactored
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IDataAccess DataAccess
 @attribute [Authorize]
 
+
 <PageTitle>Kanban</PageTitle>
+
+<KDataLoader User="@User" OnDataLoaded="HandleDataLoaded" />
 
 @if (Loaded == false)
 {
     <p>Loading Your Data...</p>
 }
 else
-{   
+{
     <CascadingValue Value="@User">
-        <DataLoader />
-        <div class="container">
-            <div class="row">
+            <div class="container horizontal-scrollable">
+                <div class="row">
                 <div class="col-md-4">
-                    <KWorkspaceSelector OnWorkspaceChanged="HandleWorkspaceChanged" />
-                </div>
+                        <KWorkspaceSelector OnWorkspaceChanged="HandleWorkspaceChanged" />
+                    </div>
                 <div class="col-md-4">
-                    <KBoardSelector SelectedWorkspace="@SelectedWorkspace" OnBoardChanged="HandleBoardChanged" />
+                        <KBoardSelector SelectedWorkspace="@SelectedWorkspace" OnBoardChanged="HandleBoardChanged" />
+                    </div>
                 </div>
             </div>
-        </div>
-        <KBoardComponent SelectedBoard="@SelectedBoard" />
+            <KBoardComponent SelectedBoard="@SelectedBoard" />
     </CascadingValue>
-    
 }
 @code {
-    public KUser? User { get; set; } = new KUser();
+    [Inject] public IDataAccess? DataAccess { get; set; }
+
+    [CascadingParameter] public KUser? User { get; set; } = new KUser();
+
     public KWorkspace? SelectedWorkspace { get; set; } = new KWorkspace();
     public KBoard? SelectedBoard { get; set; } = new KBoard();
-   
+
     public string? UserId { get; set; } = "";
     public string? Email { get; set; } = "";
     public bool? Loaded { get; set; } = false;
@@ -44,7 +46,6 @@ else
     protected override async Task OnInitializedAsync()
     {
         await GetAppUserData();
-        Loaded = true;
     }
 
     public async Task GetAppUserData()
@@ -52,14 +53,19 @@ else
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         User.Id = user.FindFirstValue(ClaimTypes.NameIdentifier);
-        User.UserName = user.FindFirstValue(ClaimTypes.Email);
+        User.UserName = user.FindFirstValue(ClaimTypes.Name);
         User.Email = user.FindFirstValue(ClaimTypes.Email).ToUpper();
+    }
+
+    public async Task HandleDataLoaded(KUser user)
+    {
+        User = user;
+        Loaded = true;
     }
 
     public async Task HandleWorkspaceChanged(KWorkspace workspace)
     {
         SelectedWorkspace = workspace;
-        StateHasChanged();
     }
 
     public async Task HandleBoardChanged(KBoard board)

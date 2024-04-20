@@ -1,0 +1,18 @@
+﻿
+<div class="card p-1 m-1 border-1" id="drag1" draggable="true" ondragstart="drag(event)">
+    <table class="table">
+        <tr>
+            <td><h4>@task.Name</h4></td>
+        </tr>
+        <tr>
+            <td colspan="2">@task.Description</td>
+        </tr>
+    </table>
+</div>
+
+<EditTaskModal SelectedTask="@task"/>
+
+@code {
+    [Parameter] public KTask? task { get; set; }
+
+}

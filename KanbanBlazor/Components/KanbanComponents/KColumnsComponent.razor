@@ -1,0 +1,39 @@
+﻿@foreach (var column in SelectedBoard!.Columns)
+{
+    <div class="card col-3 d-flex flex-column p-1 m-1 border-1 bg-light" id="div1" ondrop="drop(event)" ondragover="allowDrop(event)">
+
+        <div class="card-header border-1">
+            <div class="d-flex justify-content-between">
+                <h4>@column.Name</h4>
+                <button class="btn btn-light float-end" @onclick="(() => UpdateColumn(column))">...</button>
+            </div>
+        </div>
+
+        <div class="card-body d-flex flex-column">
+            @foreach (var task in column.Tasks)
+            {
+                <KTaskComponent task="@task" />
+            }
+        </div>
+
+    </div>
+    <EditColumnModal SelectedColumn="@column" />
+    <TaskModal SelectedColumn="@column" />
+}
+
+<ColumnModal SelectedBoard="@SelectedBoard" />
+
+@code {
+    [Parameter] public KBoard? SelectedBoard { get; set; }
+
+    private async Task UpdateColumn(KColumn column)
+    {
+        SelectedColumn = column;
+        EditColumnModal.Show();
+        while (ColumnModal.IsVisible)
+        {
+            await Task.Delay(100);
+        }
+        StateHasChanged();
+    }
+}

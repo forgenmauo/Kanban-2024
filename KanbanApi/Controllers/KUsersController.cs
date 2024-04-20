@@ -20,6 +20,13 @@ namespace KanbanApi.Controllers
         {
             _context = context;
         }
+
+        // GET: api/KUsers
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<KUser>>> GetKUsers()
+        {
+            return await _context.KUsers.ToListAsync();
+        }
       
         // GET: api/KUsers/id
         [HttpGet("{id}")]
