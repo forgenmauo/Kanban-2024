@@ -5,6 +5,7 @@
         <div class="card-header border-1">
             <div class="d-flex justify-content-between">
                 <h4>@column.Name </h4>
+                
                 <button class="btn btn-light float-end" @onclick="(() => UpdateColumn(column))">...</button>
             </div>
         </div>
@@ -20,15 +21,14 @@
             <div class="card-footer mt-auto">
                 <button class="btn btn-primary w-100" @onclick="(() => AddTask(column))">Add Task</button>
             </div>
-            
         }
     </div>
-    <EditColumnModal SelectedBoard="@SelectedBoard" SelectedColumn="column" @ref="EditColumnModal" />
+    
 }
 <div class="col-1">
     <button class="btn btn-primary pt-1 mt-1 w-50" @onclick="AddColumn">+</button>
 </div>
-
+<EditColumnModal SelectedBoard="@SelectedBoard" SelectedColumn="@SelectedColumn" @ref="EditColumnModal" />
 <ColumnModal SelectedBoard="@SelectedBoard" SelectedColumn="@SelectedColumn" @ref="ColumnModal" />
 <TaskModal @ref="TaskModal" />
 @code {
