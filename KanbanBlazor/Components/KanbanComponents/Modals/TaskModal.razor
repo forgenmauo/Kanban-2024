@@ -7,6 +7,7 @@
         height: 100vh;
         background-color: rgba(128,128,128,0.5); /* color */
         display: none; /* making it hidden by default */
+        z-index: 999;
     }
 
     .toast-container {
@@ -16,6 +17,11 @@
         transform: translate(-50%, -50%);
         z-index: 1000;
         background-color: lightgray;
+        width: auto;
+    }
+
+    .toast {
+        width: auto;
     }
 </style>
 
@@ -34,16 +40,33 @@
 
             <div class="toast-body">
                 <EditForm Model="SelectedTask" OnValidSubmit="Submit" FormName="CreateTaskForm">
-
-
-                    <p>Task Id: @SelectedTask.Id</p>
-                    <p>Column Id: @SelectedTask.KColumnId</p>
-
-                    <label>
-                        Name: <InputText @bind-Value="SelectedTask!.Name" />
-                    </label>
-
-                    <button type="submit">Submit</button>
+                    <table cellpadding="10px">
+                        <tr>
+                            <td align="right"><label>Task Id:</label></td>
+                            <td>@SelectedTask.Id</td>
+                        </tr>
+                        <tr>
+                            <td align="right"><label>Column Id:</label></td>
+                            <td>@SelectedTask.KColumnId</td>
+                        </tr>
+                        <tr>
+                            <td align="right"><label>Name:</label></td>
+                            <td><InputText @bind-Value="SelectedTask!.Name" /></td>
+                        </tr>
+                        <tr>
+                            <td align="right"><label>Description:</label></td>
+                            <td><InputText @bind-Value="SelectedTask!.Description" /></td>
+                        </tr>
+                        <tr>
+                            <td align="right">Position:</td>
+                            <td>@SelectedTask.Position</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center">
+                                <button class="btn btn-success" type="submit">Submit</button>
+                            </td>
+                        </tr>
+                    </table>
                 </EditForm>
 
             </div>
@@ -52,17 +75,21 @@
 </div>
 
 @code {
-    [CascadingParameter] public KUser? User { get; set; }
+    [Inject] public IDataAccess? DataAccess { get; set; }
 
-    [CascadingParameter] public KTask? SelectedTask { get; set; }
+    public KColumn? SelectedColumn { get; set; } = new KColumn();
+
+    public KTask? SelectedTask { get; set; } = new KTask();
 
     [Parameter] public bool IsVisible { get; set; }
 
     [Parameter] public EventCallback<bool> IsVisibleChanged { get; set; }
 
 
-    public void Show()
+    public void Show(KColumn column)
     {
+        SelectedColumn = column;
+        SelectedTask.KColumnId = SelectedColumn.Id;
         IsVisible = true;
         StateHasChanged();
     }
@@ -75,7 +102,8 @@
 
     private async Task Submit()
     {
-        User.Workspaces.Last().Boards.Last().Columns[0].Tasks.Add(SelectedTask);
+        SelectedColumn.Tasks.Add(SelectedTask);
+        await DataAccess.PostKanbanTask(SelectedTask);
         StateHasChanged();
         Close();
     }

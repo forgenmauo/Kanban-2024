@@ -17,6 +17,16 @@ namespace DAL.Services
         Task PostKanbanColumn(KColumn column);
         Task PostKanbanTask(KTask task);
 
+        Task UpdateWorkspace(KWorkspace workspace);
+        Task UpdateBoard(KBoard board);
+        Task UpdateColumn(KColumn column);
+        Task UpdateTask(KTask task);
+
+        Task DeleteTask(KTask task);
+        Task DeleteColumn(KColumn column);
+        Task DeleteBoard(KBoard board);
+        Task DeleteWorkspace(KWorkspace workspace);
+
 
 
 

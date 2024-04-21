@@ -103,6 +103,7 @@ main {
     height: 100vh;
     background-color: rgba(128,128,128,0.5); /* color */
     display: none; /* making it hidden by default */
+    z-index: 999;
 }
 
 .toast-container {
@@ -112,4 +113,5 @@ main {
     transform: translate(-50%, -50%);
     z-index: 1000;
     background-color: lightgray;
+    padding: 1rem;
 }

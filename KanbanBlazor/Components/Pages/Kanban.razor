@@ -1,0 +1,139 @@
+﻿@page "/kanban"
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Authorization
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize]
+
+
+<PageTitle>Kanban</PageTitle>
+
+<KDataLoader User="@User" OnDataLoaded="HandleDataLoaded" />
+
+@if (Loaded == false)
+{
+    <p>Loading Your Data...</p>
+}
+else
+{
+    <CascadingValue Value="@User">
+        <div> 
+            <table>
+                <tr>
+                    <td align="right"><h4>Workspace: </h4></td>
+                    <td><KWorkspaceSelector OnWorkspaceChanged="HandleWorkspaceChanged" /></td>
+                    <td><button class="btn btn-light" @onclick="UpdateWorkspace">...</button></td>
+                    <td><button class="btn btn-light" @onclick="AddWorkspace">+</button></td>
+
+                </tr>
+                <tr>
+                    <td align="right"><h4>Board: </h4></td>
+                    <td><KBoardSelector SelectedWorkspace="@SelectedWorkspace" OnBoardChanged="HandleBoardChanged" /></td>
+                    <td><button class="btn btn-light" @onclick="UpdateBoard">...</button></td>
+                    <td><button class="btn btn-light" @onclick="AddBoard">+</button></td>
+                </tr>
+            </table>
+       
+            <WorkspaceModal User="@User" SelectedWorkspace="@SelectedWorkspace" @ref="WorkspaceModal" />
+            <EditWorkspaceModal User="@User" SelectedWorkspace="@SelectedWorkspace" @ref="EditWorkspaceModal" />
+            <BoardModal SelectedWorkspace="@SelectedWorkspace" SelectedBoard="@SelectedBoard" @ref="BoardModal" />
+            <EditBoardModal SelectedWorkspace="@SelectedWorkspace" SelectedBoard="@SelectedBoard" @ref="EditBoardModal" />
+        </div>
+        <KBoardComponent SelectedBoard="@SelectedBoard" />
+    </CascadingValue>
+    
+}
+
+@code {
+    [Inject] public IDataAccess? DataAccess { get; set; }
+
+    [CascadingParameter] public KUser? User { get; set; } = new KUser();
+
+    public KWorkspace? SelectedWorkspace { get; set; } = new KWorkspace();
+
+    public KBoard? SelectedBoard { get; set; } = new KBoard();
+
+    public string? UserId { get; set; } = "";
+    public string? Email { get; set; } = "";
+    public bool? Loaded { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAppUserData();
+    }
+
+    public async Task GetAppUserData()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        User.Id = user.FindFirstValue(ClaimTypes.NameIdentifier);
+        User.UserName = user.FindFirstValue(ClaimTypes.Name);
+        User.Email = user.FindFirstValue(ClaimTypes.Email).ToUpper();
+    }
+    
+    public async Task HandleDataLoaded(KUser user)
+    {
+        User = user;
+        Loaded = true;
+    }
+
+    public async Task HandleWorkspaceChanged(KWorkspace workspace)
+    {
+        SelectedWorkspace = workspace;
+    }
+
+    public async Task HandleBoardChanged(KBoard board)
+    {
+        SelectedBoard = board;
+    }
+
+    public BoardModal? BoardModal { get; set; }
+    public WorkspaceModal? WorkspaceModal { get; set; }
+    public EditWorkspaceModal? EditWorkspaceModal { get; set; }
+    public EditBoardModal? EditBoardModal { get; set; }
+
+    private async Task UpdateBoard()
+    {
+        EditBoardModal.Show();
+        while (EditBoardModal.IsVisible)
+        {
+            await Task.Delay(100);
+        }
+        StateHasChanged();
+    }
+
+    private async Task UpdateWorkspace()
+    {
+        EditWorkspaceModal.Show();
+        while (EditWorkspaceModal.IsVisible)
+        {
+            await Task.Delay(100);
+        }
+        StateHasChanged();
+    }
+
+    private async Task AddBoard()
+    {
+        SelectedBoard = new KBoard();
+        SelectedBoard.KWorkspaceId = SelectedWorkspace.Id;
+        BoardModal.Show();
+        while (BoardModal.IsVisible)
+        {
+            await Task.Delay(100);
+        }
+        StateHasChanged();
+    }
+
+    private async Task AddWorkspace()
+    {
+        SelectedWorkspace = new KWorkspace();
+        SelectedWorkspace.KUserId = User.Id;
+        WorkspaceModal.Show();
+        while (WorkspaceModal.IsVisible)
+        {
+            await Task.Delay(100);
+        }
+        StateHasChanged();
+    }
+}

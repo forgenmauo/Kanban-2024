@@ -4,22 +4,69 @@
 
         <div class="card-header border-1">
             <div class="d-flex justify-content-between">
-                <h4>@column.Name</h4>
+                <h4>@column.Name </h4>
+                <button class="btn btn-light float-end" @onclick="(() => UpdateColumn(column))">...</button>
             </div>
         </div>
 
         <div class="card-body d-flex flex-column">
             @foreach (var task in column.Tasks)
             {
-                <KTaskComponent task="@task" />
+                <KTaskComponent SelectedColumn="column" SelectedTask="@task" />
             }
         </div>
-
+        @if (column.Name == "Todo")
+        {
+            <div class="card-footer mt-auto">
+                <button class="btn btn-primary w-100" @onclick="(() => AddTask(column))">Add Task</button>
+            </div>
+            
+        }
     </div>
+    <EditColumnModal SelectedBoard="@SelectedBoard" SelectedColumn="column" @ref="EditColumnModal" />
 }
+<div class="col-1">
+    <button class="btn btn-primary pt-1 mt-1 w-50" @onclick="AddColumn">+</button>
+</div>
 
-
+<ColumnModal SelectedBoard="@SelectedBoard" SelectedColumn="@SelectedColumn" @ref="ColumnModal" />
+<TaskModal @ref="TaskModal" />
 @code {
     [Parameter] public KBoard? SelectedBoard { get; set; }
+    public KColumn? SelectedColumn { get; set; } = new KColumn();
 
+    public TaskModal? TaskModal { get; set; }
+    public ColumnModal? ColumnModal { get; set; }
+    public EditColumnModal? EditColumnModal { get; set; }
+
+    private async Task AddTask(KColumn column)
+    {
+        TaskModal.Show(column);
+        while (TaskModal.IsVisible)
+        {
+            await Task.Delay(100);
+        }
+        StateHasChanged();
+    }
+    private async Task AddColumn()
+    {
+        SelectedColumn = new KColumn();
+        SelectedColumn.KBoardId = SelectedBoard.Id;
+        ColumnModal.Show();
+        while (ColumnModal.IsVisible)
+        {
+            await Task.Delay(100);
+        }
+        StateHasChanged();
+    }
+    private async Task UpdateColumn(KColumn column)
+    {
+        SelectedColumn = column;
+        EditColumnModal.Show();
+        while (ColumnModal.IsVisible)
+        {
+            await Task.Delay(100);
+        }
+        StateHasChanged();
+    }
 }

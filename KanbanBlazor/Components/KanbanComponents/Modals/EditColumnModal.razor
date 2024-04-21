@@ -7,6 +7,7 @@
         height: 100vh;
         background-color: rgba(128,128,128,0.5); /* color */
         display: none; /* making it hidden by default */
+        z-index: 999;
     }
 
     .toast-container {
@@ -16,6 +17,11 @@
         transform: translate(-50%, -50%);
         z-index: 1000;
         background-color: lightgray;
+        width: auto;
+    }
+
+    .toast {
+        width: auto;
     }
 </style>
 
@@ -25,7 +31,7 @@
 
 
 <div class="overlay @showClass">
-    <div class="toast-container p-3 m-auto @showClass" data-bs-autohide="true" data-bs-delay="5000">
+    <div class="toast-container @showClass" data-bs-autohide="true" data-bs-delay="5000">
         <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
                 <strong class="me-auto">Edit Column</strong>
@@ -34,18 +40,27 @@
 
             <div class="toast-body">
                 <EditForm Model="SelectedColumn" OnValidSubmit="Submit" FormName="EditColumnForm">
+                    <table cellpadding="10px">
+                        <tr>
+                            <td align="right"><label>Column Id:</label></td>
+                            <td>@SelectedColumn.Id</td>
+                        </tr>
+                        <tr>
+                            <td align="right"><label>Board Id:</label></td>
+                            <td>@SelectedColumn.KBoardId</td>
+                        </tr>
+                        <tr>
+                            <td align="right"><label>Name:</label></td>
+                            <td><InputText @bind-Value="SelectedColumn!.Name" /></td>
+                        </tr>
 
-
-                    <p>Column Id: @SelectedColumn.Id</p>
-                    <p>Board Id: @SelectedColumn.KBoardId</p>
-
-                    <label>
-                        Name: <InputText @bind-Value="SelectedColumn!.Name" />
-                    </label>
-
-                    <button type="submit">Submit</button>
-
-                    <button class="btn btn-danger" @onclick="DeleteColumn">Delete</button>
+                        <tr>
+                            <td colspan="2" align="center">
+                                <button class="btn btn-success" type="submit">Submit</button>
+                                <button class="btn btn-danger" @onclick="DeleteColumn">Delete</button>
+                            </td>
+                        </tr>
+                    </table>
                 </EditForm>
 
             </div>
@@ -54,9 +69,11 @@
 </div>
 
 @code {
-    [CascadingParameter] public KUser? User { get; set; }
+    [Inject] public IDataAccess? DataAccess { get; set; }
 
-    [CascadingParameter] public KColumn? SelectedColumn { get; set; }
+    [Parameter] public KBoard? SelectedBoard { get; set; } = new KBoard();
+
+    [Parameter] public KColumn? SelectedColumn { get; set; } = new KColumn();
 
     [Parameter] public bool IsVisible { get; set; }
 
@@ -77,13 +94,15 @@
 
     private async Task Submit()
     {
+        await DataAccess!.UpdateColumn(SelectedColumn!);
         StateHasChanged();
         Close();
     }
 
     private async Task DeleteColumn()
     {
-
+        await DataAccess!.DeleteColumn(SelectedColumn!);
+        SelectedBoard.Columns.Remove(SelectedColumn!);
         StateHasChanged();
         Close();
     }

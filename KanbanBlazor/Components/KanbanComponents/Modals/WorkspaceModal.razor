@@ -7,6 +7,7 @@
         height: 100vh;
         background-color: rgba(128,128,128,0.5); /* color */
         display: none; /* making it hidden by default */
+        z-index: 999;
     }
 
     .toast-container {
@@ -15,6 +16,12 @@
         left: 50%;
         transform: translate(-50%, -50%);
         z-index: 1000;
+        background-color: lightgray;
+        width: auto;
+    }
+
+    .toast {
+        width: auto;
     }
 </style>
 
@@ -24,7 +31,7 @@
 
 
 <div class="overlay @showClass">
-    <div class="toast-container p-3 m-auto @showClass" data-bs-autohide="true" data-bs-delay="5000">
+    <div class="toast-container @showClass" data-bs-autohide="true" data-bs-delay="5000">
         <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
                 <strong class="me-auto">Create New Workspace</strong>
@@ -33,14 +40,25 @@
 
             <div class="toast-body">
                 <EditForm Model="SelectedWorkspace" OnValidSubmit="Submit" FormName="CreateWorkspaceForm">
-                        <p>Workspace Id: @SelectedWorkspace.Id</p>
-                        <p>User Id: @SelectedWorkspace.KUserId</p>
-             
-                    <label>
-                        Name: <InputText @bind-Value="SelectedWorkspace!.Name" />
-                    </label>
-
-                    <button type="submit">Submit</button>
+                    <table cellpadding="10px">
+                        <tr>
+                            <td align="right"><label>Workspace Id:</label></td>
+                            <td>@SelectedWorkspace.Id</td>
+                        </tr>
+                        <tr>
+                            <td align="right"><label>User Id:</label></td>
+                            <td>@SelectedWorkspace.KUserId</td>
+                        </tr>
+                        <tr>
+                            <td align="right"><label>Name:</label></td>
+                            <td><InputText @bind-Value="SelectedWorkspace!.Name" /></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center">
+                                <button class="btn btn-success" type="submit">Submit</button>
+                            </td>
+                        </tr>
+                    </table>
                 </EditForm>
 
             </div>
@@ -49,9 +67,11 @@
 </div>
 
 @code {
-    [CascadingParameter] public KUser? User { get; set; }
+    [Inject] public IDataAccess? DataAccess { get; set; }
 
-    [CascadingParameter] public KWorkspace? SelectedWorkspace { get; set; }
+    [Parameter] public KUser? User { get; set; } = new KUser();
+
+    [Parameter] public KWorkspace? SelectedWorkspace { get; set; } = new KWorkspace();
 
     [Parameter] public bool IsVisible { get; set; }
 
@@ -73,19 +93,7 @@
     private async Task Submit()
     {
         User.Workspaces.Add(SelectedWorkspace);
-        User.Workspaces.Last().Boards.Add(new KBoard());
-        User.Workspaces.Last().Boards.Last().KWorkspaceId = User?.Workspaces.Last().Id;
-        User.Workspaces.Last().Boards.Last().Columns.Add(new KColumn());
-        User.Workspaces.Last().Boards.Last().Columns.Add(new KColumn());
-        User.Workspaces.Last().Boards.Last().Columns.Add(new KColumn());
-        User.Workspaces.Last().Boards.Last().Columns[0].KBoardId = User?.Workspaces.Last().Boards.Last().Id;
-        User.Workspaces.Last().Boards.Last().Columns[1].KBoardId = User?.Workspaces.Last().Boards.Last().Id;
-        User.Workspaces.Last().Boards.Last().Columns[2].KBoardId = User?.Workspaces.Last().Boards.Last().Id;
-        User.Workspaces.Last().Boards.Last().Columns[0].Name = "Todo";
-        User.Workspaces.Last().Boards.Last().Columns[1].Name = "In Progress";
-        User.Workspaces.Last().Boards.Last().Columns[2].Name = "Done";
-        User.Workspaces.Last().Boards.Last().Columns[0].Tasks.Add(new KTask());
-        User.Workspaces.Last().Boards.Last().Columns[0].Tasks[0].KColumnId = User.Workspaces.Last().Boards.Last().Columns[0].Id;
+        await DataAccess!.PostKanbanWorkspace(SelectedWorkspace);
         StateHasChanged();
         Close();
     }

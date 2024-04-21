@@ -7,6 +7,7 @@
         height: 100vh;
         background-color: rgba(128,128,128,0.5); /* color */
         display: none; /* making it hidden by default */
+        z-index: 999;
     }
 
     .toast-container {
@@ -16,6 +17,11 @@
         transform: translate(-50%, -50%);
         z-index: 1000;
         background-color: lightgray;
+        width: auto;
+    }
+
+    .toast {
+        width: auto;
     }
 </style>
 
@@ -25,7 +31,7 @@
 
 
 <div class="overlay @showClass">
-    <div class="toast-container p-3 m-auto @showClass" data-bs-autohide="true" data-bs-delay="5000">
+    <div class="toast-container @showClass" data-bs-autohide="true" data-bs-delay="5000">
         <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
                 <strong class="me-auto">Edit Board</strong>
@@ -34,18 +40,27 @@
 
             <div class="toast-body">
                 <EditForm Model="SelectedBoard" OnValidSubmit="Submit" FormName="EditBoardForm">
-
-
-                    <p>Board Id: @SelectedBoard.Id</p>
-                    <p>Workspace Id: @SelectedBoard.KWorkspaceId</p>
-
-                    <label>
-                        Name: <InputText @bind-Value="SelectedBoard!.Name" />
-                    </label>
-
-                    <button type="submit">Submit</button>
-
-                    <button class="btn btn-danger" @onclick="DeleteBoard">Delete</button>
+                    <table cellpadding="10px">
+                        <tr>
+                            <td align="right"><label>Board Id:</label></td>
+                            <td>@SelectedBoard.Id</td>
+                        </tr>
+                        <tr>
+                            <td align="right"><label>Workspace Id:</label></td>
+                            <td>@SelectedBoard.KWorkspaceId</td>
+                        </tr>
+                        <tr>
+                            <td align="right"><label>Name:</label></td>
+                            <td><InputText @bind-Value="SelectedBoard!.Name" /></td>
+                        </tr>
+                        
+                        <tr>
+                            <td colspan="2" align="center">
+                                <button class="btn btn-success" type="submit">Submit</button>
+                                <button class="btn btn-danger" @onclick="DeleteBoard">Delete</button>
+                            </td>
+                        </tr>
+                    </table>
                 </EditForm>
 
             </div>
@@ -54,9 +69,11 @@
 </div>
 
 @code {
-    [CascadingParameter] public KUser? User { get; set; }
+    [Inject] public IDataAccess? DataAccess { get; set; }
 
-    [CascadingParameter] public KBoard? SelectedBoard { get; set; }
+    [Parameter] public KWorkspace SelectedWorkspace { get; set; } = new KWorkspace();
+
+    [Parameter] public KBoard SelectedBoard { get; set; } = new KBoard();
 
     [Parameter] public bool IsVisible { get; set; }
 
@@ -77,15 +94,20 @@
 
     private async Task Submit()
     {
+        await DataAccess!.UpdateBoard(SelectedBoard);
         StateHasChanged();
         Close();
     }
 
     private async Task DeleteBoard()
     {
-        User.Workspaces.FirstOrDefault(a => a.Id.Equals(SelectedBoard.KWorkspaceId))?.Boards.Remove(SelectedBoard);
+        await DataAccess!.DeleteBoard(SelectedBoard);
+        SelectedWorkspace.Boards.Remove(SelectedBoard);
         StateHasChanged();
         Close();
     }
+
+    
 }
+
 

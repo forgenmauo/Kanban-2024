@@ -2,15 +2,28 @@
 <div class="card p-1 m-1 border-1" id="drag1" draggable="true" ondragstart="drag(event)">
     <table class="table">
         <tr>
-            <td><h4>@task.Name</h4></td>
+            <td><h4>@SelectedTask.Name </h4></td>
+            <td><button class="btn btn-light float-end w-100 border-0" @onclick="UpdateTask">...</button></td>
         </tr>
         <tr>
-            <td colspan="2">@task.Description</td>
+            <td colspan="2">@SelectedTask.Description</td>
         </tr>
     </table>
 </div>
-
+<EditTaskModal SelectedColumn="@SelectedColumn" SelectedTask="@SelectedTask" @ref="EditTaskModal" />
 @code {
-    [Parameter] public KTask? task { get; set; }
+    [Parameter] public KColumn? SelectedColumn { get; set; }
+    [Parameter] public KTask? SelectedTask { get; set; }
 
+    public EditTaskModal? EditTaskModal { get; set; }
+
+    private async Task UpdateTask()
+    {
+        EditTaskModal.Show();
+        while (EditTaskModal.IsVisible)
+        {
+            await Task.Delay(100);
+        }
+        StateHasChanged();
+    }
 }

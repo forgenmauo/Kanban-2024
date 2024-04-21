@@ -31,5 +31,14 @@ namespace DAL.Services
         public async Task PostKanbanColumn(KColumn column) => await httpClient.PostAsJsonAsync("api/KColumns", column);
         public async Task PostKanbanTask(KTask task) => await httpClient.PostAsJsonAsync("api/KTasks", task);
 
+        public async Task UpdateWorkspace(KWorkspace workspace) => await httpClient.PutAsJsonAsync($"api/KWorkspaces/{workspace.Id}", workspace);
+        public async Task UpdateBoard(KBoard board) => await httpClient.PutAsJsonAsync($"api/KBoards/{board.Id}", board);
+        public async Task UpdateColumn(KColumn column) => await httpClient.PutAsJsonAsync($"api/KColumns/{column.Id}", column);
+        public async Task UpdateTask(KTask task) => await httpClient.PutAsJsonAsync($"api/KTasks/{task.Id}", task);
+
+        public async Task DeleteTask(KTask task) => await httpClient.DeleteAsync($"api/KTasks/{task.Id}");
+        public async Task DeleteColumn(KColumn column) => await httpClient.DeleteAsync($"api/KColumns/{column.Id}");
+        public async Task DeleteBoard(KBoard board) => await httpClient.DeleteAsync($"api/KBoards/{board.Id}");
+        public async Task DeleteWorkspace(KWorkspace workspace) => await httpClient.DeleteAsync($"api/KWorkspaces/{workspace.Id}");
     }
 }

@@ -106,7 +106,7 @@
     {
         SelectedTask = new KTask();
         SelectedTask.KColumnId = SelectedBoard.Columns[0].Id;
-        TaskModal.Show();
+        TaskModal.Show(new KColumn());
         while (TaskModal.IsVisible)
         {
             await Task.Delay(100);
